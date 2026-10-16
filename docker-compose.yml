@@ -1,0 +1,28 @@
+services:
+  postgres_mostruario:
+    container_name: postgres_mostruario
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_DB: bd_mostruario
+      POSTGRES_USER: usuario_mostruario
+      POSTGRES_PASSWORD: mostruario1234.
+      POSTGRES_HOST_AUTH_METHOD: trust
+      TZ: America/Fortaleza
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./db_data:/var/lib/postgresql/data
+
+  web:
+    build: .
+    container_name: mostruario_web
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      - postgres_mostruario
