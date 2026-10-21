@@ -1,0 +1,22 @@
+{# Carrega o módulo de arquivos estáticos do Django para mapear CSS, JS e Imagens locais #}
+{% load static %}
+
+{# Configurações de codificação e responsividade básicas do navegador #}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+{# 1. Bootstrap min css: Portabilidade, garantindo interatividade sem depender de internet #}
+<link rel="stylesheet" href="{% static 'app_mostruario/css/bootstrap.min.css' %}">
+
+{# 2. Biblioteca de Ícones: FontAwesome via CDN. Fornece os icones utilizados no sistema. #}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+{# 3. Otimização de Performance: Preconnect para carregamento das fontes do Google #}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+{# 4. Favicon Dinâmico: Gerenciamento do ícone que aparece na aba do navegador #}
+<link rel="icon" href="https://fav.farm/🛒" />
+
+{# 5. Folha de Estilo Customizada: Sobrescreve propriedades do Bootstrap para regras visuais específicas do ecossistema #}
+<link rel="stylesheet" href="{% static 'app_mostruario/css/style.css' %}">

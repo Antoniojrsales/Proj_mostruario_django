@@ -1,0 +1,75 @@
+<nav class="navbar navbar-expand-lg bg-light shadow-sm">
+    <div class="container">
+        <!-- Logo -->
+        <a class="navbar-brand fw-bold" href="#"> <i class="fa-solid fa-gear"></i> Coloque seu logo aqui</a>
+        
+        <!-- Botão Menu Mobile (Hamburger) -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal" aria-controls="menuPrincipal" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Links de Navegação -->
+        <div class="collapse navbar-collapse" id="menuPrincipal">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
+                <li class="nav-item"><a class="nav-link" href="#hero">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="#news">Novidades</a></li>
+                <li class="nav-item"><a class="nav-link" href="#promo">Promoções</a></li>
+                <li class="nav-item"><a class="nav-link" href="#total">Produtos</a></li>
+                
+                <!-- Botão do Carrinho -->
+                <li class="nav-item ms-lg-3 me-lg-2">
+                    <button class="btn btn-light position-relative" type="button" id="btn-abrir-carrinho">
+                        <i class="fa-solid fa-cart-shopping fs-5 text-dark"></i>
+                        <!-- Badge de contagem do carrinho -->
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="contador-carrinho">
+                            0
+                        </span>
+                    </button>
+                </li>
+
+                <!-- Divisor visual -->
+                <li class="nav-item d-none d-lg-block"><span class="nav-link text-muted">|</span></li>
+                
+                <!-- Botão de Login Admin -->
+                <li class="nav-item ms-lg-2" id="nav-login-area">
+                    <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#loginModal">
+                        <i class="fa-solid fa-user-lock me-1"></i> Área do Lojista
+                    </button>
+                </li>
+                
+                <!-- Botão de Novo Produto (Oculto por padrão) -->
+                <li class="nav-item d-none ms-lg-2" id="nav-admin-area">
+                    <button class="btn btn-warning btn-sm fw-bold" data-bs-toggle="modal" data-bs-target="#produtoModal">
+                        <i class="fa-solid fa-plus me-1"></i> Novo Produto
+                    </button>
+                    <button class="btn btn-danger btn-sm ms-2" id="btn-logout" title="Sair">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Modal de Login -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title fs-6 fw-bold" id="loginModalLabel">Acesso Restrito</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label small">Usuário</label>
+                    <input type="text" id="admin-user" class="form-control form-control-sm" placeholder="Ex: admin">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small">Senha</label>
+                    <input type="password" id="admin-pass" class="form-control form-control-sm" placeholder="***">
+                </div>
+                <button type="button" id="btn-fazer-login" class="btn btn-dark w-100 btn-sm">Entrar</button>
+            </div>
+        </div>
+    </div>
+</div>

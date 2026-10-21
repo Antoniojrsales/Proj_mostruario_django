@@ -1,0 +1,36 @@
+{% extends "global/base.html" %}
+
+{% block title %}Mostruario{% endblock %}
+
+{% block main-content %}
+    <!-- Hero Section -->
+    <section id="hero" class="py-5 bg-light">
+        <div class="container">
+            <div class="row align-items-center">
+                
+                <!-- Lado Esquerdo: Mensagem -->
+                <div class="col-lg-6 text-center text-lg-start mb-4 mb-lg-0">
+                    <span class="badge bg-success mb-2">Novo Mostruário</span>
+                    <h1 class="display-4 fw-bold text-dark mb-3">Sua Mensagem de Impacto Aqui</h1>
+                    <p class="lead text-secondary mb-4">
+                        Uma breve descrição sobre a qualidade dos produtos ou a proposta de valor da loja para prender a atenção do cliente logo de cara.
+                    </p>
+                    <!-- Botão que âncora para a seção de produtos -->
+                    <a href="#total" class="btn btn-primary btn-lg px-4 me-2">Ver Catálogo</a>
+                    <!-- Botão direto para o WhatsApp geral (opcional na hero) -->
+                    <a href="#" class="btn btn-outline-success btn-lg px-4">
+                        <i class="fa-brands fa-whatsapp me-2"></i>Falar com Vendedor
+                    </a>
+                </div>
+
+                <!-- Lado Direito: Logo da Empresa -->
+                <div class="col-lg-6 text-center">
+                    <!-- Usando um placeholder genérico. Depois basta trocar o src pela logo real -->
+                    <img src="https://placehold.co/500x500/ffffff/cccccc?text=Logo+da+Empresa" alt="Logo Principal da Empresa" class="img-fluid rounded shadow-sm" style="max-height: 450px;">
+                </div>
+
+            </div>
+        </div>
+    </section>
+    <!-- /Hero Section -->
+{% endblock main-content %}

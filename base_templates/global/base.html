@@ -1,0 +1,40 @@
+{# Carrega o módulo de arquivos estáticos do Django para mapear CSS, JS e Imagens locais #}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    {# Metadados globais, links de fontes e folhas de estilo (Bootstrap local) #}
+    {% include 'app_mostruario/partials/head.html' %}
+
+    {# Bloco do título específico de cada página mantendo o sufixo #}
+    <title>{% block title %}{% endblock title %} | Mostruario</title>
+</head>
+
+{# Contêiner flexbox vertical #}
+<body class="d-flex flex-column min-vh-100">
+
+    {# Componente da barra de navegação superior (Navbar) #}
+    {% include 'app_mostruario/partials/navbar.html' %}
+
+    {# Bloco dinâmico reservado para conteúdo específico de cada página#}
+    <main class="main-content-container flex-grow-1">
+        {% block main-content %}{% endblock main-content %}
+    </main>
+
+    <footer class="bg-dark text-white-50 text-center py-3 mt-auto border-top border-secondary">
+        {# Rodapé estilizado com Bootstrap (declaração de direitos autorais e créditos) #}
+        {% include 'app_mostruario/partials/footer.html' %}
+    </footer>
+
+    {# 1. Bootstrap Bundle Local: Portabilidade, garantindo interatividade sem depender de internet #}
+    <script src="{% static 'app_mostruario/js/bootstrap.bundle.min.js' %}"></script>
+    
+    {# 2. SweetAlert2 via CDN: Biblioteca externa utilizada para renderização de alertas e pop-ups #}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    {# Bloco dinâmico reservado para scripts JavaScript específicos de cada página#}
+    {% block scripts %}{% endblock scripts %}
+
+</body>
+</html>
