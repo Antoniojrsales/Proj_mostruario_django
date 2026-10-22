@@ -1,9 +1,18 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from .models import Produto
 
 def lojinha_home(request):
-    return render(request, 'app_mostruario/pages/lojinha.html')
+    # 1. Busca TODOS os produtos que têm a tag 'destaque_semana'
+    destaques = Produto.objects.filter(tag='destaque_semana')
+    
+    # 2. Empacota os dados num dicionário (o "contexto")
+    context = {
+        'destaques': destaques
+    }
+    
+    # 3. Envia o contexto para o HTML
+    return render(request, 'app_mostruario/pages/lojinha.html', context)
 
 def login_lojista(request):
     if request.method == 'POST':
@@ -46,4 +55,8 @@ def cadastrar_produto(request):
         # 3. Redirecionar de volta para a página principal (o 302 que o teste espera)
         return redirect('lojinha_home')
         
+    return redirect('lojinha_home')
+
+def logout_lojista(request):
+    logout(request)
     return redirect('lojinha_home')

@@ -33,4 +33,73 @@
         </div>
     </section>
     <!-- /Hero Section -->
+
+    <!-- Carrossel de Destaques -->
+    <section class="container-fluid px-4 py-5" id="destaques">
+        <h3 class="text-center fw-bold mb-4">Destaques da Semana</h3>
+        
+        <!-- Fundo dividido estilo UI (Gradiente Laranja para Azul) -->
+        <div class="rounded-4 shadow-lg p-2 p-md-4" style="background: linear-gradient(90deg, #d35400 0%, #19335A 100%);">
+            
+            <div id="carrosselDestaques" class="carousel slide carousel-fade" data-bs-ride="carousel">
+                
+                <!-- Indicadores (Bolinhas) -->
+                <div class="carousel-indicators" style="margin-bottom: -0.5rem;">
+                    <button type="button" data-bs-target="#carrosselDestaques" data-bs-slide-to="0" class="active" aria-current="true"></button>
+                    <button type="button" data-bs-target="#carrosselDestaques" data-bs-slide-to="1"></button>
+                    <button type="button" data-bs-target="#carrosselDestaques" data-bs-slide-to="2"></button>
+                </div>
+
+                <!-- Imagens e Textos do Carrossel -->
+                <div class="carousel-inner rounded-3">                    
+                    {% for produto in destaques %}
+                        <!-- O primeiro item precisa ter a classe 'active', os outros não -->
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}" data-bs-interval="4000">
+                            <div class="row align-items-center justify-content-center p-4 p-md-5" style="min-height: 380px;">
+                                
+                                <!-- Coluna do Texto -->
+                                <div class="col-md-5 text-center text-md-start text-white mb-4 mb-md-0 order-2 order-md-1 px-lg-5">
+                                    <span class="badge bg-warning text-dark mb-2 fw-bold">Destaque da Semana</span>
+                                    <!-- 1. Nome do produto dinâmico -->
+                                    <h3 class="fw-bold fs-2 mb-2">{{ produto.nome }}</h3>
+                                    <!-- 2. Preço do produto dinâmico formatado -->
+                                    <p class="text-light opacity-90 mb-4 fs-6">Aproveite esta oferta imperdível por apenas R$ {{ produto.preco }}!</p>
+                                    <a href="#catalogo" class="btn btn-warning fw-bold px-4">Ver no catálogo</a>
+                                </div>
+                                
+                                <!-- Coluna da Imagem -->
+                                <div class="col-md-5 text-center order-1 order-md-2">
+                                    <!-- 3. URL da imagem dinâmica (com if para evitar erro se não houver foto) -->
+                                    {% if produto.imagem %}
+                                        <img src="{{ produto.imagem.url }}" class="img-fluid rounded-3 shadow-sm bg-white p-2" style="max-height: 280px; width: auto; object-fit: contain;" alt="{{ produto.nome }}">
+                                    {% else %}
+                                        <p class="text-light">Sem imagem</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <!-- Mensagem de fallback caso não haja destaques cadastrados -->
+                        <div class="carousel-item active">
+                            <div class="row align-items-center justify-content-center p-4 p-md-5" style="min-height: 380px;">
+                                <h3 class="text-white text-center">Nenhum destaque cadastrado ainda.</h3>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Controles (Setas laterais) -->
+                <button class="carousel-control-prev" type="button" data-bs-target="#carrosselDestaques" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Anterior</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carrosselDestaques" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Próximo</span>
+                </button>
+            </div>
+        </div>
+    </section>
+    <!-- /Carrossel de Destaques -->
+
 {% endblock main-content %}

@@ -56,3 +56,18 @@ def test_lojista_consegue_cadastrar_produto_via_modal(client):
     assert response.status_code == 302
     assert Produto.objects.count() == 1
     assert Produto.objects.first().nome == 'Kit Relação Dominator Titan 150'
+
+@pytest.mark.django_db
+def test_lojista_consegue_fazer_logout(client):
+    # 1. Arrange: Criamos um utilizador e forçamos o login ativo
+    user = User.objects.create_user(username='dono_loja_sair', password='123')
+    client.force_login(user)
+    
+    # 2. Act: Tentamos chamar a rota de logout que ainda não criámos
+    url = reverse('logout_lojista')
+    response = client.get(url)
+    
+    # 3. Assert: Esperamos um redirecionamento (302) e a perda da sessão (is_authenticated == False)
+    from django.contrib.auth import get_user
+    assert response.status_code == 302
+    assert not get_user(client).is_authenticated

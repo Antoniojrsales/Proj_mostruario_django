@@ -38,10 +38,9 @@
                         </button>
                     </li>
                     <li class="nav-item ms-lg-2">
-                        <!-- Futuramente faremos a rota para este botão de logout -->
-                        <button class="btn btn-danger btn-sm" title="Sair">
+                        <a href="{% url 'logout_lojista' %}" class="btn btn-danger btn-sm" title="Sair" onclick="window.location.href=this.href; return false">
                             <i class="fa-solid fa-right-from-bracket"></i>
-                        </button>
+                        </a>
                     </li>
                 {% else %}
                     <!-- Botão exibido QUANDO DESLOGADO -->
@@ -106,6 +105,7 @@
                             <label class="form-label small">Tag de Destaque</label>
                             <select name="tag" class="form-select form-select-sm">
                                 <option value="">Normal</option>
+                                <option value="destaque_semana">Destaque da Semana</option>
                                 <option value="mais_vendidos">Mais vendidos</option>
                                 <option value="promocao">Promoção</option>
                             </select>
