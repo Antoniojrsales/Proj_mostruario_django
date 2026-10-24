@@ -3,6 +3,14 @@
 {% block title %}Mostruario{% endblock %}
 
 {% block main-content %}
+    <!-- Botão Flutuante do WhatsApp (FAB) -->
+    <a id="whatsapp-link" href="https://wa.me/5585992049066" target="_blank" 
+    class="btn btn-success position-fixed bottom-0 end-0 m-4 rounded-circle shadow-lg z-3 p-3" 
+    aria-label="Falar com o vendedor no WhatsApp">
+        <i class="fa-brands fa-whatsapp fa-2x"></i>
+    </a>
+    <!-- /Botão Flutuante do WhatsApp -->
+
     <!-- Hero Section -->
     <section id="hero" class="py-5 bg-light">
         <div class="container">
@@ -16,9 +24,9 @@
                         Uma breve descrição sobre a qualidade dos produtos ou a proposta de valor da loja para prender a atenção do cliente logo de cara.
                     </p>
                     <!-- Botão que âncora para a seção de produtos -->
-                    <a href="#total" class="btn btn-primary btn-lg px-4 me-2">Ver Catálogo</a>
+                    <a href="#catalogo" class="btn btn-primary btn-lg px-4 me-2">Ver Catálogo</a>
                     <!-- Botão direto para o WhatsApp geral (opcional na hero) -->
-                    <a href="#" class="btn btn-outline-success btn-lg px-4">
+                    <a id="whatsapp-link" href="https://wa.me/5585992049066" target="_blank"  class="btn btn-outline-success btn-lg px-4">
                         <i class="fa-brands fa-whatsapp me-2"></i>Falar com Vendedor
                     </a>
                 </div>
@@ -192,10 +200,16 @@
 
         </div>
 
+        <!-- Botão Ver Mais -->
+        <div class="text-center mt-5" id="container-ver-mais" style="display: none;">
+            <button id="btn-ver-mais" class="btn btn-outline-primary px-5 py-2 rounded-pill fw-bold">Ver Mais Produtos</button>
+        </div>
+
+        <!-- Mensagem de Fallback para Pesquisa Vazia -->
         <div id="mensagem-vazia" class="text-center w-100 py-5" style="display: none;">
             <h4 class="text-muted"><i class="fa-solid fa-magnifying-glass mb-3 d-block fs-1"></i>Ops! Não encontrámos nenhuma peça com esse nome.</h4>
         </div>
-        
+  
     </section>
     <!-- /Seção de Produtos -->
 
@@ -226,6 +240,92 @@
                     });
                 });
             });
+        });
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const botoesFiltro = document.querySelectorAll("#pills-tab .nav-link");
+            const produtos = document.querySelectorAll(".item-catalogo");
+            const inputPesquisa = document.getElementById("input-pesquisa");
+            const mensagemVazia = document.getElementById("mensagem-vazia");
+            const containerVerMais = document.getElementById("container-ver-mais");
+            const btnVerMais = document.getElementById("btn-ver-mais");
+
+            // Variáveis de estado
+            let termoBuscaAtual = "";
+            let categoriaAtual = "todos";
+            const CARDS_POR_PAGINA = 3; // Exibe 6 produtos de cada vez
+            let limiteAtual = CARDS_POR_PAGINA;
+
+            // Função central para renderizar a grelha
+            function atualizarGrelha() {
+                let produtosFiltrados = [];
+
+                // 1. Isolar os produtos que correspondem ao filtro e pesquisa
+                produtos.forEach(produto => {
+                    const tituloProduto = produto.querySelector(".card-title").innerText.toLowerCase();
+                    const categoriaProduto = produto.getAttribute("data-categoria");
+                    
+                    const correspondeBusca = tituloProduto.includes(termoBuscaAtual);
+                    const correspondeCategoria = (categoriaAtual === "todos" || categoriaAtual === categoriaProduto);
+
+                    if (correspondeBusca && correspondeCategoria) {
+                        produtosFiltrados.push(produto);
+                    } else {
+                        produto.style.display = "none";
+                    }
+                });
+
+                // 2. Aplicar o limite de visualização aos produtos filtrados
+                produtosFiltrados.forEach((produto, index) => {
+                    if (index < limiteAtual) {
+                        produto.style.display = "block";
+                    } else {
+                        produto.style.display = "none";
+                    }
+                });
+
+                // 3. Controlar a exibição das mensagens e botões
+                mensagemVazia.style.display = produtosFiltrados.length === 0 ? "block" : "none";
+                containerVerMais.style.display = produtosFiltrados.length > limiteAtual ? "block" : "none";
+            }
+
+            // Evento: Digitação na pesquisa
+            inputPesquisa.addEventListener("input", function() {
+                termoBuscaAtual = this.value.toLowerCase();
+                categoriaAtual = "todos"; // Volta à aba "Todos os Produtos"
+                limiteAtual = CARDS_POR_PAGINA; // Reseta o limite visual
+                
+                botoesFiltro.forEach(b => b.classList.remove("active"));
+                document.getElementById("btn-filtro-todos").classList.add("active");
+                
+                atualizarGrelha();
+            });
+
+            // Evento: Clique nas abas de categoria
+            botoesFiltro.forEach(botao => {
+                botao.addEventListener("click", function() {
+                    categoriaAtual = this.getAttribute("data-categoria");
+                    termoBuscaAtual = ""; // Limpa a pesquisa
+                    inputPesquisa.value = ""; 
+                    limiteAtual = CARDS_POR_PAGINA; // Reseta o limite visual
+
+                    botoesFiltro.forEach(b => b.classList.remove("active"));
+                    this.classList.add("active");
+
+                    atualizarGrelha();
+                });
+            });
+
+            // Evento: Clique no botão "Ver Mais"
+            btnVerMais.addEventListener("click", function() {
+                limiteAtual += CARDS_POR_PAGINA;
+                atualizarGrelha();
+            });
+
+            // Renderiza a grelha inicial assim que a página carrega
+            atualizarGrelha();
         });
     </script>
 {% endblock scripts %}  
