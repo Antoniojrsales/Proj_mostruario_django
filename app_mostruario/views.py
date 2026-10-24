@@ -3,15 +3,22 @@ from django.contrib.auth import authenticate, login, logout
 from .models import Produto
 
 def lojinha_home(request):
-    # 1. Busca TODOS os produtos que têm a tag 'destaque_semana'
+    # O filtro do carrossel que já existia
     destaques = Produto.objects.filter(tag='destaque_semana')
     
-    # 2. Empacota os dados num dicionário (o "contexto")
+    # Os novos filtros para as secções do catálogo
+    produtos_normais = Produto.objects.filter(tag='normal')
+    produtos_mais_vendidos = Produto.objects.filter(tag='mais_vendidos')
+    produtos_promocoes = Produto.objects.filter(tag='promocao')
+    
+    # Empacotamento de todas as variáveis no contexto
     context = {
-        'destaques': destaques
+        'destaques': destaques,
+        'produtos_normais': produtos_normais,
+        'produtos_mais_vendidos': produtos_mais_vendidos,
+        'produtos_promocoes': produtos_promocoes,
     }
     
-    # 3. Envia o contexto para o HTML
     return render(request, 'app_mostruario/pages/lojinha.html', context)
 
 def login_lojista(request):

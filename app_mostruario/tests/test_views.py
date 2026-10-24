@@ -3,7 +3,6 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 from app_mostruario.models import Produto
 
-# Marcação necessária para o pytest saber que este teste pode interagir com o Django
 @pytest.mark.django_db
 def test_rota_lojinha_retorna_status_200_e_template_correto(client):
     # 1. Arrange (Preparação): Definimos que a rota se chamará 'lojinha_home'
@@ -71,3 +70,51 @@ def test_lojista_consegue_fazer_logout(client):
     from django.contrib.auth import get_user
     assert response.status_code == 302
     assert not get_user(client).is_authenticated
+
+@pytest.mark.django_db
+def test_home_envia_produtos_de_destaque_para_o_carrossel(client):
+    # 1. Arrange: Criamos um produto destaque e um normal para garantir que o filtro da view funciona
+    Produto.objects.create(nome="Kit Destaque", preco="80.00", tag="destaque_semana")
+    Produto.objects.create(nome="Capa Normal", preco="50.00", tag="normal")
+    
+    # 2. Act: Acessamos a rota da página inicial
+    url = reverse('lojinha_home')
+    response = client.get(url)
+    
+    # 3. Assert: Validamos o status e o que foi enviado para o HTML
+    assert response.status_code == 200
+    
+    # Capturamos a variável 'destaques' que a nossa view envia para o template
+    destaques = response.context.get('destaques')
+    
+    assert destaques is not None
+    assert len(destaques) == 1
+    assert destaques[0].nome == "Kit Destaque"
+
+@pytest.mark.django_db
+def test_home_separa_produtos_por_categoria_para_o_catalogo(client):
+    # 1. Arrange: Criamos um produto para cada tag do catálogo
+    Produto.objects.create(nome="Kit Padrão", preco="50.00", tag="normal")
+    Produto.objects.create(nome="Capa Sucesso", preco="120.00", tag="mais_vendidos")
+    Produto.objects.create(nome="Luva Barata", preco="30.00", tag="promocao")
+    
+    # 2. Act: Acedemos à view principal
+    url = reverse('lojinha_home')
+    response = client.get(url)
+    
+    # 3. Assert: Validamos se a view devolve as listas separadas no contexto
+    assert response.status_code == 200
+    
+    normais = response.context.get('produtos_normais')
+    mais_vendidos = response.context.get('produtos_mais_vendidos')
+    promocoes = response.context.get('produtos_promocoes')
+    
+    # Verificamos se as listas existem e contêm exatamente 1 produto cada
+    assert normais is not None and len(normais) == 1
+    assert mais_vendidos is not None and len(mais_vendidos) == 1
+    assert promocoes is not None and len(promocoes) == 1
+    
+    # Garantimos que a view não misturou os produtos nas categorias erradas
+    assert normais[0].nome == "Kit Padrão"
+    assert mais_vendidos[0].nome == "Capa Sucesso"
+    assert promocoes[0].nome == "Luva Barata"

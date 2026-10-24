@@ -102,4 +102,130 @@
     </section>
     <!-- /Carrossel de Destaques -->
 
+    <!-- Seção de Produtos -->
+    <section id="catalogo" class="container-fluid px-4 py-5">
+        <h2 class="text-center fw-bold mb-4">Nosso Catálogo</h2>
+        
+        <!-- Tabs de Navegação (Filtros) -->
+        <ul class="nav nav-pills justify-content-center mb-5" id="pills-tab" role="tablist">
+            <!-- Barra de Pesquisa -->
+            <div class="row justify-content-center mb-5">
+                <div class="col-md-8 col-lg-6">
+                    <div class="input-group input-group-lg shadow-sm rounded-pill overflow-hidden">
+                        <span class="input-group-text bg-white border-0 text-muted ps-4">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </span>
+                        <input type="text" id="input-pesquisa" class="form-control border-0 shadow-none" placeholder="Buscar por peça, marca ou modelo...">
+                    </div>
+                </div>
+            </div>
+
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="btn-filtro-todos" data-categoria="todos" type="button">Todos os Produtos</button>
+            </li>
+
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="btn-filtro-lancamentos" data-categoria="normais" type="button">Lançamentos</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="btn-filtro-mais_vendidos" data-categoria="mais_vendidos" type="button">Mais Vendidos</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="btn-filtro-promocoes" data-categoria="promocoes" type="button">Promoções</button>
+            </li>
+
+        </ul>
+
+        <!-- Grid onde os produtos serão renderizados pelo Django -->
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="grid-produtos">
+            
+            <!-- Loop 1: Mais Vendidos -->
+            {% for produto in produtos_mais_vendidos %}
+            <div class="col item-catalogo" data-categoria="mais_vendidos">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="bg-warning text-dark text-center fw-bold py-1 rounded-top" style="font-size: 0.8rem;">Mais Vendidos</div>
+                    {% if produto.imagem %}
+                        <img src="{{ produto.imagem.url }}" class="card-img-top p-3" style="height: 200px; object-fit: contain;" alt="{{ produto.nome }}">
+                    {% endif %}
+                    <div class="card-body d-flex flex-column">
+                        <p class="card-title text-secondary mb-2" style="font-size: 0.9rem;">{{ produto.nome }}</p>
+                        <h5 class="fw-bold mb-3 mt-auto">R$ {{ produto.preco }}</h5>
+                        <button class="btn btn-outline-success w-100">Adicionar ao carrinho</button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+            <!-- Loop 2: Promoções -->
+            {% for produto in produtos_promocoes %}
+            <div class="col item-catalogo" data-categoria="promocoes">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="bg-danger text-white text-center fw-bold py-1 rounded-top" style="font-size: 0.8rem;">Promoção</div>
+                    {% if produto.imagem %}
+                        <img src="{{ produto.imagem.url }}" class="card-img-top p-3" style="height: 200px; object-fit: contain;" alt="{{ produto.nome }}">
+                    {% endif %}
+                    <div class="card-body d-flex flex-column">
+                        <p class="card-title text-secondary mb-2" style="font-size: 0.9rem;">{{ produto.nome }}</p>
+                        <h5 class="fw-bold mb-3 mt-auto">R$ {{ produto.preco }}</h5>
+                        <button class="btn btn-outline-success w-100">Adicionar ao carrinho</button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+            <!-- Loop 3: Produtos Normais -->
+            {% for produto in produtos_normais %}
+            <div class="col item-catalogo" data-categoria="normais">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="bg-light text-muted text-center fw-bold py-1 rounded-top" style="font-size: 0.8rem;">Lançamento</div>
+                    {% if produto.imagem %}
+                        <img src="{{ produto.imagem.url }}" class="card-img-top p-3" style="height: 200px; object-fit: contain;" alt="{{ produto.nome }}">
+                    {% endif %}
+                    <div class="card-body d-flex flex-column">
+                        <p class="card-title text-secondary mb-2" style="font-size: 0.9rem;">{{ produto.nome }}</p>
+                        <h5 class="fw-bold mb-3 mt-auto">R$ {{ produto.preco }}</h5>
+                        <button class="btn btn-outline-success w-100">Adicionar ao carrinho</button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+        </div>
+
+        <div id="mensagem-vazia" class="text-center w-100 py-5" style="display: none;">
+            <h4 class="text-muted"><i class="fa-solid fa-magnifying-glass mb-3 d-block fs-1"></i>Ops! Não encontrámos nenhuma peça com esse nome.</h4>
+        </div>
+        
+    </section>
+    <!-- /Seção de Produtos -->
+
 {% endblock main-content %}
+
+{% block scripts %}
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const botoesFiltro = document.querySelectorAll("#pills-tab .nav-link");
+            const produtos = document.querySelectorAll(".item-catalogo");
+
+            botoesFiltro.forEach(botao => {
+                botao.addEventListener("click", function() {
+                    // Atualiza o botão ativo
+                    botoesFiltro.forEach(b => b.classList.remove("active"));
+                    this.classList.add("active");
+
+                    const categoriaSelecionada = this.getAttribute("data-categoria");
+
+                    // Mostra ou esconde os cards baseado no data-categoria
+                    produtos.forEach(produto => {
+                        const categoriaProduto = produto.getAttribute("data-categoria");
+                        if (categoriaSelecionada === "todos" || categoriaSelecionada === categoriaProduto) {
+                            produto.style.display = "block";
+                        } else {
+                            produto.style.display = "none";
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+{% endblock scripts %}  
