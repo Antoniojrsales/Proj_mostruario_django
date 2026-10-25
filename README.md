@@ -27,11 +27,11 @@ Proj_mostruario_django/
 │   ├── templates
 │       ├── app_mostruario
 │           ├── pages 
-│               └── lojinha.py
+│               └── lojinha.html
 │           ├── partials
-│               └── footer.py
-│               └── head.py
-│               └── navbar.py
+│               └── footer.html
+│               └── head.html
+│               └── navbar.html
 │   ├── tests
 │       └── __init__.py
 │       └── test_views.py
@@ -82,3 +82,36 @@ Este projeto foi construído utilizando as seguintes ferramentas e bibliotecas:
 * **Base de Dados:** PostgreSQL, Django ORM.
 * **Testes & Qualidade:** Pytest (Test-Driven Development para validação de regras de negócio e rotas).
 * **Ambiente & Ferramentas:** Docker (Testes e isolamento), Git/GitHub.
+
+## 🚀 Como Executar o Projeto Localmente
+
+Pré-requisitos: É necessário ter o [Docker](https://www.docker.com/) e o [Docker Compose](https://docs.docker.com/compose/) instalados no sistema.
+
+**1. Clonar o repositório**
+```bash
+git clone [https://github.com/Antoniojrsales/Proj_mostruario_django](https://github.com/Antoniojrsales/Proj_mostruario_django.git)
+cd nome-do-repositorio
+
+# Crie e ative o ambiente virtual
+python -m venv venv
+source venv/bin/activate  # No Windows: venv\Scripts\activate
+
+# Instale as dependências
+pip install -r requirements.txt
+```
+
+**2. Iniciar os contentores Docker**
+docker-compose up --build -d
+
+**3. Aplicar as migrações no PostgreSQL**
+docker-compose exec web python manage.py migrate
+
+**4. Criar o utilizador gestor (Opcional)**
+docker-compose exec web python manage.py createsuperuser
+
+**5. Correr a suite de testes (Pytest)**
+docker-compose exec web pytest
+
+```
+A aplicação ficará disponível no navegador através do endereço http://localhost:8000.
+```
