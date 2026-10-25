@@ -89,7 +89,8 @@ Pré-requisitos: É necessário ter o [Docker](https://www.docker.com/) e o [Doc
 
 **1. Clonar o repositório**
 ```bash
-git clone [https://github.com/Antoniojrsales/Proj_mostruario_django](https://github.com/Antoniojrsales/Proj_mostruario_django.git)
+git clone [https://github.com/Antoniojrsales/Proj_mostruario_django.git]
+(https://github.com/Antoniojrsales/Proj_mostruario_django)
 cd nome-do-repositorio
 
 # Crie e ative o ambiente virtual
