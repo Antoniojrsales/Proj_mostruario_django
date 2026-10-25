@@ -89,8 +89,7 @@ Pré-requisitos: É necessário ter o [Docker](https://www.docker.com/) e o [Doc
 
 **1. Clonar o repositório**
 ```bash
-git clone [https://github.com/Antoniojrsales/Proj_mostruario_django.git]
-(https://github.com/Antoniojrsales/Proj_mostruario_django)
+git clone [https://github.com/Antoniojrsales/Proj_mostruario_django.git](https://github.com/Antoniojrsales/Proj_mostruario_django)
 cd nome-do-repositorio
 
 # Crie e ative o ambiente virtual
@@ -101,18 +100,16 @@ source venv/bin/activate  # No Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-**2. Iniciar os contentores Docker**
+**2. Iniciar os contentores Docker:**
 docker-compose up --build -d
 
-**3. Aplicar as migrações no PostgreSQL**
+**3. Aplicar as migrações no PostgreSQL:**
 docker-compose exec web python manage.py migrate
 
-**4. Criar o utilizador gestor (Opcional)**
+**4. Criar o utilizador gestor (Opcional):**
 docker-compose exec web python manage.py createsuperuser
 
-**5. Correr a suite de testes (Pytest)**
+**5. Correr a suite de testes (Pytest):**
 docker-compose exec web pytest
 
-```
-A aplicação ficará disponível no navegador através do endereço http://localhost:8000.
-```
+A aplicação ficará disponível no navegador através do endereço [Localhost](http://localhost:8000.)
