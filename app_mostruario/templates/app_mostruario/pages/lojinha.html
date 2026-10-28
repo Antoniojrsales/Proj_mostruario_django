@@ -159,6 +159,81 @@
                         <p class="card-title text-secondary mb-2" style="font-size: 0.9rem;">{{ produto.nome }}</p>
                         <h5 class="fw-bold mb-3 mt-auto">R$ {{ produto.preco }}</h5>
                         <button class="btn btn-outline-success w-100">Adicionar ao carrinho</button>
+                        
+                        <!-- Bloco de Administração (Apenas Lojista) -->
+                        {% if request.user.is_authenticated %}
+                        <div class="mt-2 d-flex justify-content-between gap-2">
+                            <!-- Botões que acionam os modais específicos deste produto -->
+                            <button type="button" class="btn btn-warning btn-sm w-50 fw-bold" data-bs-toggle="modal" data-bs-target="#modalEditar{{ produto.id }}">
+                                <i class="fa-solid fa-pen"></i> Editar
+                            </button>
+                            <button type="button" class="btn btn-danger btn-sm w-50 fw-bold" data-bs-toggle="modal" data-bs-target="#modalExcluir{{ produto.id }}">
+                                <i class="fa-solid fa-trash"></i> Excluir
+                            </button>
+                        </div>
+
+                        <!-- Modal Personalizado de Exclusão -->
+                        <div class="modal fade" id="modalExcluir{{ produto.id }}" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content border-0 shadow">
+                                    <div class="modal-header bg-danger text-white border-0">
+                                        <h5 class="modal-title fw-bold"><i class="fa-solid fa-triangle-exclamation me-2"></i>Confirmar Exclusão</h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body text-center py-4">
+                                        <p class="fs-5 mb-1">Tem a certeza que deseja excluir o produto:</p>
+                                        <p class="fw-bold text-danger fs-4 mb-3">{{ produto.nome }}?</p>
+                                        <p class="text-muted small mb-0">Esta ação é permanente e não poderá ser desfeita.</p>
+                                    </div>
+                                    <div class="modal-footer border-0 justify-content-center bg-light">
+                                        <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancelar</button>
+                                        <form action="{% url 'excluir_produto' produto.id %}" method="POST" class="m-0">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger px-4 fw-bold">Sim, Excluir</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Modal Personalizado de Edição -->
+                        <div class="modal fade" id="modalEditar{{ produto.id }}" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content border-0 shadow">
+                                    <div class="modal-header bg-warning border-0">
+                                        <h5 class="modal-title fw-bold text-dark"><i class="fa-solid fa-pen me-2"></i>Editar Produto</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <form action="{% url 'editar_produto' produto.id %}" method="POST" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <div class="modal-body text-start">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold text-secondary">Nome do Produto</label>
+                                                <input type="text" name="nome" class="form-control bg-light" value="{{ produto.nome }}" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold text-secondary">Preço (R$)</label>
+                                                <input type="text" name="preco" class="form-control bg-light" value="{{ produto.preco }}" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold text-secondary">Categoria (Tag)</label>
+                                                <select name="tag" class="form-select bg-light">
+                                                    <option value="normal" {% if produto.tag == 'normal' %}selected{% endif %}>Normal (Lançamento)</option>
+                                                    <option value="mais_vendidos" {% if produto.tag == 'mais_vendidos' %}selected{% endif %}>Mais Vendidos</option>
+                                                    <option value="promocao" {% if produto.tag == 'promocao' %}selected{% endif %}>Promoção</option>
+                                                    <option value="destaque_semana" {% if produto.tag == 'destaque_semana' %}selected{% endif %}>Destaque da Semana</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer border-0 bg-light">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                            <button type="submit" class="btn btn-warning fw-bold text-dark">Salvar Alterações</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -176,6 +251,81 @@
                         <p class="card-title text-secondary mb-2" style="font-size: 0.9rem;">{{ produto.nome }}</p>
                         <h5 class="fw-bold mb-3 mt-auto">R$ {{ produto.preco }}</h5>
                         <button class="btn btn-outline-success w-100">Adicionar ao carrinho</button>
+                        
+                        <!-- Bloco de Administração (Apenas Lojista) -->
+                        {% if request.user.is_authenticated %}
+                        <div class="mt-2 d-flex justify-content-between gap-2">
+                            <!-- Botões que acionam os modais específicos deste produto -->
+                            <button type="button" class="btn btn-warning btn-sm w-50 fw-bold" data-bs-toggle="modal" data-bs-target="#modalEditar{{ produto.id }}">
+                                <i class="fa-solid fa-pen"></i> Editar
+                            </button>
+                            <button type="button" class="btn btn-danger btn-sm w-50 fw-bold" data-bs-toggle="modal" data-bs-target="#modalExcluir{{ produto.id }}">
+                                <i class="fa-solid fa-trash"></i> Excluir
+                            </button>
+                        </div>
+
+                        <!-- Modal Personalizado de Exclusão -->
+                        <div class="modal fade" id="modalExcluir{{ produto.id }}" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content border-0 shadow">
+                                    <div class="modal-header bg-danger text-white border-0">
+                                        <h5 class="modal-title fw-bold"><i class="fa-solid fa-triangle-exclamation me-2"></i>Confirmar Exclusão</h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body text-center py-4">
+                                        <p class="fs-5 mb-1">Tem a certeza que deseja excluir o produto:</p>
+                                        <p class="fw-bold text-danger fs-4 mb-3">{{ produto.nome }}?</p>
+                                        <p class="text-muted small mb-0">Esta ação é permanente e não poderá ser desfeita.</p>
+                                    </div>
+                                    <div class="modal-footer border-0 justify-content-center bg-light">
+                                        <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancelar</button>
+                                        <form action="{% url 'excluir_produto' produto.id %}" method="POST" class="m-0">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger px-4 fw-bold">Sim, Excluir</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Modal Personalizado de Edição -->
+                        <div class="modal fade" id="modalEditar{{ produto.id }}" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content border-0 shadow">
+                                    <div class="modal-header bg-warning border-0">
+                                        <h5 class="modal-title fw-bold text-dark"><i class="fa-solid fa-pen me-2"></i>Editar Produto</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <form action="{% url 'editar_produto' produto.id %}" method="POST" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <div class="modal-body text-start">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold text-secondary">Nome do Produto</label>
+                                                <input type="text" name="nome" class="form-control bg-light" value="{{ produto.nome }}" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold text-secondary">Preço (R$)</label>
+                                                <input type="text" name="preco" class="form-control bg-light" value="{{ produto.preco }}" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold text-secondary">Categoria (Tag)</label>
+                                                <select name="tag" class="form-select bg-light">
+                                                    <option value="normal" {% if produto.tag == 'normal' %}selected{% endif %}>Normal (Lançamento)</option>
+                                                    <option value="mais_vendidos" {% if produto.tag == 'mais_vendidos' %}selected{% endif %}>Mais Vendidos</option>
+                                                    <option value="promocao" {% if produto.tag == 'promocao' %}selected{% endif %}>Promoção</option>
+                                                    <option value="destaque_semana" {% if produto.tag == 'destaque_semana' %}selected{% endif %}>Destaque da Semana</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer border-0 bg-light">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                            <button type="submit" class="btn btn-warning fw-bold text-dark">Salvar Alterações</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -193,6 +343,81 @@
                         <p class="card-title text-secondary mb-2" style="font-size: 0.9rem;">{{ produto.nome }}</p>
                         <h5 class="fw-bold mb-3 mt-auto">R$ {{ produto.preco }}</h5>
                         <button class="btn btn-outline-success w-100">Adicionar ao carrinho</button>
+                        
+                        <!-- Bloco de Administração (Apenas Lojista) -->
+                        {% if request.user.is_authenticated %}
+                        <div class="mt-2 d-flex justify-content-between gap-2">
+                            <!-- Botões que acionam os modais específicos deste produto -->
+                            <button type="button" class="btn btn-warning btn-sm w-50 fw-bold" data-bs-toggle="modal" data-bs-target="#modalEditar{{ produto.id }}">
+                                <i class="fa-solid fa-pen"></i> Editar
+                            </button>
+                            <button type="button" class="btn btn-danger btn-sm w-50 fw-bold" data-bs-toggle="modal" data-bs-target="#modalExcluir{{ produto.id }}">
+                                <i class="fa-solid fa-trash"></i> Excluir
+                            </button>
+                        </div>
+
+                        <!-- Modal Personalizado de Exclusão -->
+                        <div class="modal fade" id="modalExcluir{{ produto.id }}" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content border-0 shadow">
+                                    <div class="modal-header bg-danger text-white border-0">
+                                        <h5 class="modal-title fw-bold"><i class="fa-solid fa-triangle-exclamation me-2"></i>Confirmar Exclusão</h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body text-center py-4">
+                                        <p class="fs-5 mb-1">Tem a certeza que deseja excluir o produto:</p>
+                                        <p class="fw-bold text-danger fs-4 mb-3">{{ produto.nome }}?</p>
+                                        <p class="text-muted small mb-0">Esta ação é permanente e não poderá ser desfeita.</p>
+                                    </div>
+                                    <div class="modal-footer border-0 justify-content-center bg-light">
+                                        <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancelar</button>
+                                        <form action="{% url 'excluir_produto' produto.id %}" method="POST" class="m-0">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger px-4 fw-bold">Sim, Excluir</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Modal Personalizado de Edição -->
+                        <div class="modal fade" id="modalEditar{{ produto.id }}" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content border-0 shadow">
+                                    <div class="modal-header bg-warning border-0">
+                                        <h5 class="modal-title fw-bold text-dark"><i class="fa-solid fa-pen me-2"></i>Editar Produto</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <form action="{% url 'editar_produto' produto.id %}" method="POST" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <div class="modal-body text-start">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold text-secondary">Nome do Produto</label>
+                                                <input type="text" name="nome" class="form-control bg-light" value="{{ produto.nome }}" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold text-secondary">Preço (R$)</label>
+                                                <input type="text" name="preco" class="form-control bg-light" value="{{ produto.preco }}" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold text-secondary">Categoria (Tag)</label>
+                                                <select name="tag" class="form-select bg-light">
+                                                    <option value="normal" {% if produto.tag == 'normal' %}selected{% endif %}>Normal (Lançamento)</option>
+                                                    <option value="mais_vendidos" {% if produto.tag == 'mais_vendidos' %}selected{% endif %}>Mais Vendidos</option>
+                                                    <option value="promocao" {% if produto.tag == 'promocao' %}selected{% endif %}>Promoção</option>
+                                                    <option value="destaque_semana" {% if produto.tag == 'destaque_semana' %}selected{% endif %}>Destaque da Semana</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer border-0 bg-light">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                            <button type="submit" class="btn btn-warning fw-bold text-dark">Salvar Alterações</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>

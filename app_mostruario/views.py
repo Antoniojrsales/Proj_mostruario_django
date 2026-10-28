@@ -1,6 +1,7 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from .models import Produto
+from django.contrib.auth.decorators import login_required
 
 def lojinha_home(request):
     # O filtro do carrossel que já existia
@@ -66,4 +67,30 @@ def cadastrar_produto(request):
 
 def logout_lojista(request):
     logout(request)
+    return redirect('lojinha_home')
+
+@login_required(login_url='/login')
+def editar_produto(request, id):
+    produto = get_object_or_404(Produto, id=id)
+    
+    if request.method == 'POST':
+        produto.nome = request.POST.get('nome')
+        
+        # Substitui a vírgula recebida do HTML por um ponto matemático
+        preco_str = request.POST.get('preco', '0').replace(',', '.')
+        produto.preco = float(preco_str)
+
+        produto.tag = request.POST.get('tag')
+        produto.save()
+        return redirect('lojinha_home')
+        
+    return redirect('lojinha_home') # Redireciona caso o acesso não seja por POST
+
+@login_required(login_url='/login')
+def excluir_produto(request, id):
+    produto = get_object_or_404(Produto, id=id)
+    
+    if request.method == 'POST':
+        produto.delete()
+        
     return redirect('lojinha_home')

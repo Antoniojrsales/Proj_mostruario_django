@@ -3,6 +3,17 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 from app_mostruario.models import Produto
 
+@pytest.fixture
+def produto_ficticio(db):
+    # Cria e devolve o produto apenas com os campos obrigatórios do seu model
+    produto = Produto.objects.create(
+        nome="Produto de Teste",
+        preco=99.90,
+        tag="normal"
+        # Não enviamos imagem pois o model permite null=True e blank=True
+    )
+    return produto
+
 @pytest.mark.django_db
 def test_rota_lojinha_retorna_status_200_e_template_correto(client):
     # 1. Arrange (Preparação): Definimos que a rota se chamará 'lojinha_home'
@@ -118,3 +129,59 @@ def test_home_separa_produtos_por_categoria_para_o_catalogo(client):
     assert normais[0].nome == "Kit Padrão"
     assert mais_vendidos[0].nome == "Capa Sucesso"
     assert promocoes[0].nome == "Luva Barata"
+
+@pytest.mark.django_db
+def test_editar_produto_requer_autenticacao(client, produto_ficticio):
+    # A rota 'editar_produto' ainda será criada no urls.py
+    url = reverse('editar_produto', kwargs={'id': produto_ficticio.id})
+    resposta = client.get(url)
+    
+    # Espera-se um redirecionamento (302) para a página de login
+    assert resposta.status_code == 302
+    assert '/login' in resposta.url
+
+@pytest.mark.django_db
+def test_excluir_produto_requer_autenticacao(client, produto_ficticio):
+    url = reverse('excluir_produto', kwargs={'id': produto_ficticio.id})
+    resposta = client.post(url)
+    
+    assert resposta.status_code == 302
+    assert '/login' in resposta.url
+
+@pytest.mark.django_db
+def test_lojista_consegue_editar_produto(client, produto_ficticio, django_user_model):
+    # 1. Criar e autenticar o lojista
+    lojista = django_user_model.objects.create_user(username='lojista_teste', password='123')
+    client.force_login(lojista)
+    
+    # 2. Dados atualizados do formulário
+    novos_dados = {
+        'nome': 'Capacete Editado',
+        'preco': '150.00',
+        'tag': 'promocao'
+    }
+    
+    # 3. Enviar requisição POST para atualizar
+    from django.urls import reverse
+    url = reverse('editar_produto', kwargs={'id': produto_ficticio.id})
+    resposta = client.post(url, novos_dados)
+    
+    # 4. Validar o redirecionamento (302) e a alteração na base de dados
+    assert resposta.status_code == 302
+    produto_ficticio.refresh_from_db()
+    assert produto_ficticio.nome == 'Capacete Editado'
+    assert float(produto_ficticio.preco) == 150.00
+
+@pytest.mark.django_db
+def test_lojista_consegue_excluir_produto(client, produto_ficticio, django_user_model):
+    lojista = django_user_model.objects.create_user(username='lojista_teste2', password='123')
+    client.force_login(lojista)
+    
+    url = reverse('excluir_produto', kwargs={'id': produto_ficticio.id})
+    resposta = client.post(url)
+    
+    assert resposta.status_code == 302
+    
+    # Validar se o produto desapareceu da base de dados
+    from app_mostruario.models import Produto
+    assert Produto.objects.count() == 0
