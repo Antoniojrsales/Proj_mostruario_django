@@ -158,7 +158,13 @@
                     <div class="card-body d-flex flex-column">
                         <p class="card-title text-secondary mb-2" style="font-size: 0.9rem;">{{ produto.nome }}</p>
                         <h5 class="fw-bold mb-3 mt-auto">R$ {{ produto.preco }}</h5>
-                        <button class="btn btn-outline-success w-100">Adicionar ao carrinho</button>
+                        
+                        <form action="{% url 'adicionar_carrinho' produto.id %}" method="POST" class="w-100 mb-2">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-success w-100 fw-bold">
+                                <i class="fa-solid fa-cart-plus me-1"></i> Adicionar ao carrinho
+                            </button>
+                        </form>
                         
                         <!-- Bloco de Administração (Apenas Lojista) -->
                         {% if request.user.is_authenticated %}
@@ -250,7 +256,13 @@
                     <div class="card-body d-flex flex-column">
                         <p class="card-title text-secondary mb-2" style="font-size: 0.9rem;">{{ produto.nome }}</p>
                         <h5 class="fw-bold mb-3 mt-auto">R$ {{ produto.preco }}</h5>
-                        <button class="btn btn-outline-success w-100">Adicionar ao carrinho</button>
+                        
+                        <form action="{% url 'adicionar_carrinho' produto.id %}" method="POST" class="w-100 mb-2">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-success w-100 fw-bold">
+                                <i class="fa-solid fa-cart-plus me-1"></i> Adicionar ao carrinho
+                            </button>
+                        </form>
                         
                         <!-- Bloco de Administração (Apenas Lojista) -->
                         {% if request.user.is_authenticated %}
@@ -342,7 +354,13 @@
                     <div class="card-body d-flex flex-column">
                         <p class="card-title text-secondary mb-2" style="font-size: 0.9rem;">{{ produto.nome }}</p>
                         <h5 class="fw-bold mb-3 mt-auto">R$ {{ produto.preco }}</h5>
-                        <button class="btn btn-outline-success w-100">Adicionar ao carrinho</button>
+                        
+                        <form action="{% url 'adicionar_carrinho' produto.id %}" method="POST" class="w-100 mb-2">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-success w-100 fw-bold">
+                                <i class="fa-solid fa-cart-plus me-1"></i> Adicionar ao carrinho
+                            </button>
+                        </form>
                         
                         <!-- Bloco de Administração (Apenas Lojista) -->
                         {% if request.user.is_authenticated %}
@@ -437,6 +455,61 @@
   
     </section>
     <!-- /Seção de Produtos -->
+
+    <!-- Menu Lateral do Carrinho (Offcanvas) -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="carrinhoOffcanvas" aria-labelledby="carrinhoOffcanvasLabel">
+        <div class="offcanvas-header bg-light border-bottom">
+            <h5 class="offcanvas-title fw-bold text-dark" id="carrinhoOffcanvasLabel">
+                <i class="fa-solid fa-cart-shopping me-2 text-success"></i>Seu Pedido
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        
+        <div class="offcanvas-body d-flex flex-column">
+            {% if request.session.carrinho %}
+                <!-- Lista de Produtos -->
+                <ul class="list-group list-group-flush mb-auto">
+                    {% for produto_id, item in request.session.carrinho.items %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <div>
+                                <h6 class="my-0 fw-bold text-secondary">{{ item.nome }}</h6>
+                                <small class="text-muted">Qtd: {{ item.quantidade }} x R$ {{ item.preco_formatado }}</small>
+                            </div>
+                            <!-- Botão de Excluir Item -->
+                            <form action="{% url 'remover_carrinho' produto_id %}" method="POST" class="m-0">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-outline-danger border-0" title="Remover do pedido">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </form>
+                        </li>
+                    {% endfor %}
+                </ul>
+                
+                <!-- Resumo e Botão de Finalizar -->
+                <div class="border-top pt-3 mt-4">
+                    <!-- Resumo e Botão de Finalizar -->
+                    <div class="border-top pt-3 mt-4">
+                        <div class="d-flex justify-content-between fw-bold fs-5 mb-3 text-dark">
+                            <span>Total:</span>
+                            <span>R$ {{ total_carrinho }}</span>
+                        </div>
+                        <a href="{{ link_whatsapp }}" target="_blank" class="btn btn-success w-100 fw-bold py-2 shadow-sm">
+                            <i class="fa-brands fa-whatsapp me-2"></i>Enviar Pedido
+                        </a>
+                    </div>
+                </div>
+            {% else %}
+                <!-- Mensagem de Carrinho Vazio -->
+                <div class="text-center text-muted my-auto">
+                    <i class="fa-solid fa-basket-shopping fs-1 mb-3 text-light"></i>
+                    <p>O seu carrinho está vazio.</p>
+                    <button class="btn btn-outline-primary btn-sm mt-2" data-bs-dismiss="offcanvas">Ver Catálogo</button>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    <!-- /Menu Lateral do Carrinho (Offcanvas) -->
 
 {% endblock main-content %}
 

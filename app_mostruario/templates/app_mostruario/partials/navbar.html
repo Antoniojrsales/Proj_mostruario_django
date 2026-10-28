@@ -17,10 +17,10 @@
                 
                 <!-- Botão do Carrinho -->
                 <li class="nav-item ms-lg-3 me-lg-2">
-                    <button class="btn btn-light position-relative" type="button" id="btn-abrir-carrinho">
+                    <button class="btn btn-light position-relative" type="button" data-bs-toggle="offcanvas" data-bs-target="#carrinhoOffcanvas" aria-controls="carrinhoOffcanvas">
                         <i class="fa-solid fa-cart-shopping fs-5 text-dark"></i>
                         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="contador-carrinho">
-                            0
+                            {{ quantidade_carrinho|default:"0" }}
                         </span>
                     </button>
                 </li>

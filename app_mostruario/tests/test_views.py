@@ -185,3 +185,106 @@ def test_lojista_consegue_excluir_produto(client, produto_ficticio, django_user_
     # Validar se o produto desapareceu da base de dados
     from app_mostruario.models import Produto
     assert Produto.objects.count() == 0
+
+@pytest.mark.django_db
+def test_adicionar_produto_ao_carrinho_via_sessao(client, produto_ficticio):
+    from django.urls import reverse
+    
+    # 1. Definimos a futura rota que processará o clique
+    url = reverse('adicionar_carrinho', kwargs={'id': produto_ficticio.id})
+    
+    # 2. Simulamos o clique no botão "Adicionar ao carrinho" (requisição POST)
+    resposta = client.post(url)
+    
+    # 3. Esperamos que o sistema adicione e redirecione de volta para a montra (302)
+    assert resposta.status_code == 302
+    
+    # 4. Inspecionamos a sessão do navegador simulado
+    carrinho = client.session.get('carrinho', {})
+    
+    # O JSON da sessão guarda as chaves do dicionário sempre como strings
+    produto_id_str = str(produto_ficticio.id)
+    
+    # Validamos as regras de negócio de segurança e dados
+    assert produto_id_str in carrinho
+    assert carrinho[produto_id_str]['quantidade'] == 1
+    assert carrinho[produto_id_str]['preco'] == '99.90' # Valor exato da nossa fixture
+
+@pytest.mark.django_db
+def test_adicionar_produto_inexistente_retorna_404(client):
+    from django.urls import reverse
+    # Tenta adicionar um ID que não existe na base de dados
+    url = reverse('adicionar_carrinho', kwargs={'id': 9999})
+    resposta = client.post(url)
+    
+    # O sistema deve barrar a ação imediatamente com um Not Found
+    assert resposta.status_code == 404
+
+@pytest.mark.django_db
+def test_incremento_de_quantidade_e_integridade_no_carrinho(client, produto_ficticio):
+    from django.urls import reverse
+    url = reverse('adicionar_carrinho', kwargs={'id': produto_ficticio.id})
+    
+    # Simula o utilizador a clicar duas vezes no botão "Adicionar"
+    client.post(url)
+    client.post(url)
+    
+    carrinho = client.session.get('carrinho', {})
+    produto_id_str = str(produto_ficticio.id)
+    
+    # A quantidade deve ser exatamente 2 (não pode duplicar o item nem manter 1)
+    assert carrinho[produto_id_str]['quantidade'] == 2
+    # O preço injetado tem de continuar a ser estritamente o da base de dados
+    assert carrinho[produto_id_str]['preco'] == '99.90'
+
+@pytest.mark.django_db
+def test_remover_produto_do_carrinho(client, produto_ficticio):
+    from django.urls import reverse
+    
+    # 1. Adiciona o produto ao carrinho
+    url_add = reverse('adicionar_carrinho', kwargs={'id': produto_ficticio.id})
+    client.post(url_add)
+    
+    # 2. Confirma que ele entrou na sessão
+    assert str(produto_ficticio.id) in client.session.get('carrinho', {})
+    
+    # 3. Dispara o clique no futuro botão de remover
+    url_remover = reverse('remover_carrinho', kwargs={'id': produto_ficticio.id})
+    client.post(url_remover)
+    
+    # 4. Exige que a sessão não contenha mais esse ID
+    assert str(produto_ficticio.id) not in client.session.get('carrinho', {})
+
+@pytest.mark.django_db
+def test_geracao_link_whatsapp_no_context_processor(client, produto_ficticio):
+    from django.urls import reverse
+    import urllib.parse
+    
+    # 1. Injetamos um cenário controlado diretamente na sessão do navegador de teste
+    session = client.session
+    session['carrinho'] = {
+        str(produto_ficticio.id): {
+            'nome': produto_ficticio.nome,
+            'preco': '150.00', # Valor fixo para o teste
+            'quantidade': 2
+        }
+    }
+    session.save()
+    
+    # 2. Fazemos um GET à página inicial (que aciona os context_processors)
+    resposta = client.get(reverse('lojinha_home'))
+    
+    # 3. Capturamos a variável global que deve ter sido gerada
+    link_gerado = resposta.context.get('link_whatsapp')
+    
+    # A variável tem de existir e não pode ser apenas o sustenido "#"
+    assert link_gerado is not None
+    assert link_gerado != "#"
+    
+    # 4. Descodificamos o URL para conseguirmos ler o texto limpo
+    texto_legivel = urllib.parse.unquote(link_gerado)
+    
+    # 5. Validações estritas de negócio
+    assert "5585992049066" in texto_legivel  # O número do lojista está correto
+    assert produto_ficticio.nome in texto_legivel  # O nome do produto aparece na lista
+    assert "300,00" in texto_legivel  # O total (150 * 2) foi devidamente calculado e formatado

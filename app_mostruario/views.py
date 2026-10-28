@@ -94,3 +94,39 @@ def excluir_produto(request, id):
         produto.delete()
         
     return redirect('lojinha_home')
+
+def adicionar_carrinho(request, id):
+    produto = get_object_or_404(Produto, id=id)
+    
+    # Recupera o carrinho da sessão atual ou cria um dicionário vazio se não existir
+    carrinho = request.session.get('carrinho', {})
+    
+    # As chaves de dicionários em sessões (JSON) devem ser strings
+    produto_id_str = str(produto.id)
+    
+    # Se o produto já existir no carrinho, apenas aumentamos a quantidade
+    if produto_id_str in carrinho:
+        carrinho[produto_id_str]['quantidade'] += 1
+    else:
+        # Se for um produto novo, registamos os dados básicos
+        carrinho[produto_id_str] = {
+            'nome': produto.nome,
+            'preco': str(produto.preco),
+            'quantidade': 1
+        }
+    
+    # Guardamos o carrinho atualizado de volta na sessão do navegador
+    request.session['carrinho'] = carrinho
+    
+    return redirect('lojinha_home')
+
+def remover_carrinho(request, id):
+    carrinho = request.session.get('carrinho', {})
+    produto_id_str = str(id)
+    
+    # Remove do dicionário caso exista (evita erro 500 se o utilizador clicar duas vezes rápido)
+    if produto_id_str in carrinho:
+        del carrinho[produto_id_str]
+        request.session['carrinho'] = carrinho
+        
+    return redirect('lojinha_home')
