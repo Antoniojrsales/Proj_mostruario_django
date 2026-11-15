@@ -108,7 +108,7 @@ source venv/bin/activate  # No Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-**Crie uma cópia do arquivo de exemplo para configurar as credenciais do banco e do Django:**
+**1. Crie uma cópia do arquivo de exemplo para configurar as credenciais do banco e do Django:**
 cp .env.example .env
 
 **2. Iniciar os contentores Docker:**
