@@ -1,3 +1,4 @@
+# Plano B
 # 🛒 Projeto: Page Mostruario - E-commerce & Catálogo Dinâmico
 
 Plataforma de e-commerce interativa focada em performance e experiência do utilizador (UX). Desenvolvida com Django, Bootstrap 5 e JavaScript, a aplicação gere um catálogo completo com filtros de texto e categoria em tempo real, paginação via front-end e redirecionamento de conversão para o WhatsApp. A arquitetura back-end utiliza PostgreSQL para assegurar a integridade relacional do inventário e das operações de gestão de produtos.
@@ -80,6 +81,7 @@ Proj_mostruario_django/
 | **Filtros em Tempo Real** | Busca instantânea por texto e categorização por abas sem recarregamento da página, poupando processamento no servidor. | JavaScript (Manipulação de DOM), Lógica de Otimização (UX). |
 | **Cadastro de Produtos** | Inserção de novos itens no inventário via modal front-end com persistência direta na base de dados. | Django Views, Tratamento de POST, Segurança CSRF. |
 | **Conversão Direta (FAB)** | Botão flutuante de WhatsApp ancorado na interface para facilitar o contacto imediato do cliente. | UX/UI Design, Bootstrap 5 (Classes Utilitárias). |
+| **API & OpenAPI (Swagger)** | Exposição de catálogo via endpoint JSON e documentação interativa gerada dinamicamente. | Django Ninja, RESTful API, Serialização de Dados. |
 
 ## 🛠 Tecnologias Utilizadas
 
@@ -88,8 +90,18 @@ Este projeto foi construído utilizando as seguintes ferramentas e bibliotecas:
 * **Back-end:** Python 3.x, Django (Arquitetura MVT), Pillow (Processamento e manipulação das imagens do catálogo).
 * **Front-end:** HTML5, CSS3, JavaScript (Manipulação de DOM e Eventos), Bootstrap 5.
 * **Base de Dados:** PostgreSQL, Django ORM.
-* **Testes & Qualidade:** Pytest (Test-Driven Development para validação de regras de negócio e rotas).
-* **Ambiente & Ferramentas:** Docker (Testes e isolamento), Git/GitHub.
+* **Qualidade de Código & Testes:** Pytest, pytest-cov, Flake8 (Linting).
+* **DevOps & Infraestrutura:** Docker, Docker Compose, GitHub Actions (CI/CD).
+
+## ⚙️ Integração Contínua (CI/CD) e Testes
+
+O projeto conta com uma esteira de Integração Contínua configurada via **GitHub Actions** (`.github/workflows/ci.yml`). A cada *push* ou *pull request* para a *branch* principal, a pipeline executa as seguintes validações:
+1. Construção da infraestrutura isolada (Docker).
+2. Análise estática de qualidade de código (Linting) com **Flake8**.
+3. Execução da suite de testes automatizados com **Pytest**.
+
+**Cobertura de Testes (Coverage):**
+A suite de testes utiliza o padrão *Arrange-Act-Assert* e garante a integridade das regras de negócio, carrinho de compras e segurança das rotas. O projeto possui atualmente **93% de cobertura de código**.
 
 ## 🚀 Como Executar o Projeto Localmente
 
@@ -99,6 +111,7 @@ Pré-requisitos: É necessário ter o [Docker](https://www.docker.com/) e o [Doc
 ```bash
 git clone [https://github.com/Antoniojrsales/Proj_mostruario_django.git](https://github.com/Antoniojrsales/Proj_mostruario_django)
 cd nome-do-repositorio
+cp .env.example .env
 
 # Crie e ative o ambiente virtual
 python -m venv venv
@@ -108,10 +121,7 @@ source venv/bin/activate  # No Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-**1. Crie uma cópia do arquivo de exemplo para configurar as credenciais do banco e do Django:**
-cp .env.example .env
-
-**2. Iniciar os contentores Docker:**
+**2. Iniciar a infraestrutura (Docker Compose):**
 docker-compose up --build -d
 
 **3. Aplicar as migrações no PostgreSQL:**
@@ -123,4 +133,10 @@ docker-compose exec web python manage.py createsuperuser
 **5. Correr a suite de testes (Pytest):**
 docker-compose exec web pytest
 
-A aplicação ficará disponível no navegador através do endereço [Localhost](http://localhost:8000.)
+## 🌐 Endpoints e Acesso
+
+Com o projeto a correr localmente, pode aceder às seguintes rotas no seu navegador:
+
+- **Aplicação Principal (Catálogo HTML):** [http://localhost:8000](http://localhost:8000)
+- **Endpoint da API (Lista de Produtos em JSON):** [http://localhost:8000/api/produtos/](http://localhost:8000/api/produtos/)
+- **Documentação Interativa (Swagger/OpenAPI):** [http://localhost:8000/api/docs](http://localhost:8000/api/docs)
