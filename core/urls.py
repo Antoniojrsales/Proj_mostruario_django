@@ -2,10 +2,12 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from app_mostruario.api import api
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('app_mostruario.urls')),    
+    path('', include('app_mostruario.urls')),   
+    path('api/', api.urls),
 ]
 
 # Adicionar o mapeamento da pasta media durante o desenvolvimento
