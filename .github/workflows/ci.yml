@@ -37,5 +37,8 @@ jobs:
     - name: Subir Infraestrutura (Docker Compose)
       run: docker compose up -d --build
 
+    - name: Coletar Arquivos Estaticos (Collectstatic)
+      run: docker compose exec -T web python manage.py collectstatic --noinput
+
     - name: Executar Testes (Pytest + Coverage)
       run: docker compose exec -T web pytest
