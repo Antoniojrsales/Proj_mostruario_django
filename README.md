@@ -103,6 +103,20 @@ O projeto conta com uma esteira de Integração Contínua configurada via **GitH
 **Cobertura de Testes (Coverage):**
 A suite de testes utiliza o padrão *Arrange-Act-Assert* e garante a integridade das regras de negócio, carrinho de compras e segurança das rotas. O projeto possui atualmente **93% de cobertura de código**.
 
+## 📊 Observabilidade e Performance
+
+A aplicação foi instrumentada para garantir total observabilidade em ambientes de produção:
+
+* **Métricas (Prometheus):** Integração com `django-prometheus` para exposição de métricas de consumo de memória, latência de requisições HTTP e operações no banco de dados.
+* **Logs Estruturados:** Utilização da biblioteca `django-structlog` para padronizar as saídas do terminal em formato JSON, facilitando a ingestão por ferramentas modernas de monitorização (ELK Stack, Datadog, etc.).
+
+### ⚡ Teste de Carga e Stress (k6)
+Para validar a resiliência da arquitetura, o projeto foi submetido a testes de carga utilizando o **Grafana k6**. 
+O cenário simulou o acesso simultâneo de **50 utilizadores virtuais (VUs)** às rotas de renderização HTML e à API REST durante 1 minuto e 40 segundos, resultando em:
+* **Total de Requisições:** 4.280 efetuadas com sucesso.
+* **Taxa de Erro:** 0.00% (Zero falhas no processamento).
+* **Latência:** Tempo de resposta estável e sem gargalos na base de dados PostgreSQL sob stress.
+
 ## 🚀 Como Executar o Projeto Localmente
 
 Pré-requisitos: É necessário ter o [Docker](https://www.docker.com/) e o [Docker Compose](https://docs.docker.com/compose/) instalados no sistema.
@@ -140,3 +154,4 @@ Com o projeto a correr localmente, pode aceder às seguintes rotas no seu navega
 - **Aplicação Principal (Catálogo HTML):** [http://localhost:8000](http://localhost:8000)
 - **Endpoint da API (Lista de Produtos em JSON):** [http://localhost:8000/api/produtos/](http://localhost:8000/api/produtos/)
 - **Documentação Interativa (Swagger/OpenAPI):** [http://localhost:8000/api/docs](http://localhost:8000/api/docs)
+- **Métricas da Aplicação (Prometheus):** [http://localhost:8000/metrics](http://localhost:8000/metrics)

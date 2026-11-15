@@ -8,6 +8,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('app_mostruario.urls')),   
     path('api/', api.urls),
+    path('', include('django_prometheus.urls')),
 ]
 
 # Adicionar o mapeamento da pasta media durante o desenvolvimento
