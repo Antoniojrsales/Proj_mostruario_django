@@ -2,6 +2,14 @@
 
 Plataforma de e-commerce interativa focada em performance e experiência do utilizador (UX). Desenvolvida com Django, Bootstrap 5 e JavaScript, a aplicação gere um catálogo completo com filtros de texto e categoria em tempo real, paginação via front-end e redirecionamento de conversão para o WhatsApp. A arquitetura back-end utiliza PostgreSQL para assegurar a integridade relacional do inventário e das operações de gestão de produtos.
 
+## 🏗️ Padrão Arquitetural: Django MVT (Model-View-Template)
+
+Para o desenvolvimento deste projeto, optou-se pela utilização do framework Django com o seu padrão nativo **MVT** e o ORM baseado em **Active Record**. 
+
+**Justificativa Técnica:**
+1. **Velocidade de Entrega (Time-to-Market):** O forte acoplamento entre os Models (PostgreSQL) e as Views/Templates permitiu o desenvolvimento rápido do catálogo e do motor de carrinho baseado em sessões, sem a sobrecarga de construir e manter uma API REST/GraphQL separada para o Front-End nesta fase.
+2. **Coesão e Manutenção:** Manter o fluxo de dados centralizado num Monólito reduz a complexidade de infraestrutura e facilita o deploy contínuo (via Docker Compose).
+
 ## ✅ Etapas de Inicialização
 
 - Estruturação do projeto em pastas
@@ -99,6 +107,9 @@ source venv/bin/activate  # No Windows: venv\Scripts\activate
 # Instale as dependências
 pip install -r requirements.txt
 ```
+
+**Crie uma cópia do arquivo de exemplo para configurar as credenciais do banco e do Django:**
+cp .env.example .env
 
 **2. Iniciar os contentores Docker:**
 docker-compose up --build -d

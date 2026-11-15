@@ -515,115 +515,96 @@
 
 {% block scripts %}
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const botoesFiltro = document.querySelectorAll("#pills-tab .nav-link");
-            const produtos = document.querySelectorAll(".item-catalogo");
+    document.addEventListener("DOMContentLoaded", function() {
+        const botoesFiltro = document.querySelectorAll("#pills-tab .nav-link");
+        const produtos = document.querySelectorAll(".item-catalogo");
+        const inputPesquisa = document.getElementById("input-pesquisa");
+        const mensagemVazia = document.getElementById("mensagem-vazia");
+        const containerVerMais = document.getElementById("container-ver-mais");
+        const btnVerMais = document.getElementById("btn-ver-mais");
 
-            botoesFiltro.forEach(botao => {
-                botao.addEventListener("click", function() {
-                    // Atualiza o botão ativo
-                    botoesFiltro.forEach(b => b.classList.remove("active"));
-                    this.classList.add("active");
+        // Variáveis de estado
+        let termoBuscaAtual = "";
+        let categoriaAtual = "todos";
+        const CARDS_POR_PAGINA = 3; // Exibe 3 produtos de cada vez
+        let limiteAtual = CARDS_POR_PAGINA;
 
-                    const categoriaSelecionada = this.getAttribute("data-categoria");
+        // Função central para renderizar a grelha
+        function atualizarGrelha() {
+            let produtosFiltrados = [];
 
-                    // Mostra ou esconde os cards baseado no data-categoria
-                    produtos.forEach(produto => {
-                        const categoriaProduto = produto.getAttribute("data-categoria");
-                        if (categoriaSelecionada === "todos" || categoriaSelecionada === categoriaProduto) {
-                            produto.style.display = "block";
-                        } else {
-                            produto.style.display = "none";
-                        }
-                    });
-                });
+            // Isolar os produtos que correspondem ao filtro e pesquisa
+            produtos.forEach(produto => {
+                const tituloElement = produto.querySelector(".card-title");
+                if (!tituloElement) return; // Proteção extra caso o card não tenha título
+                
+                const tituloProduto = tituloElement.innerText.toLowerCase();
+                const categoriaProduto = produto.getAttribute("data-categoria");
+                
+                const correspondeBusca = tituloProduto.includes(termoBuscaAtual);
+                const correspondeCategoria = (categoriaAtual === "todos" || categoriaAtual === categoriaProduto);
+
+                if (correspondeBusca && correspondeCategoria) {
+                    produtosFiltrados.push(produto);
+                } else {
+                    produto.style.display = "none";
+                }
             });
-        });
-    </script>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const botoesFiltro = document.querySelectorAll("#pills-tab .nav-link");
-            const produtos = document.querySelectorAll(".item-catalogo");
-            const inputPesquisa = document.getElementById("input-pesquisa");
-            const mensagemVazia = document.getElementById("mensagem-vazia");
-            const containerVerMais = document.getElementById("container-ver-mais");
-            const btnVerMais = document.getElementById("btn-ver-mais");
+            // Aplicar o limite de visualização aos produtos filtrados
+            produtosFiltrados.forEach((produto, index) => {
+                if (index < limiteAtual) {
+                    produto.style.display = "block";
+                } else {
+                    produto.style.display = "none";
+                }
+            });
 
-            // Variáveis de estado
-            let termoBuscaAtual = "";
-            let categoriaAtual = "todos";
-            const CARDS_POR_PAGINA = 3; // Exibe 6 produtos de cada vez
-            let limiteAtual = CARDS_POR_PAGINA;
+            // Controlar a exibição das mensagens e botões
+            if (mensagemVazia) mensagemVazia.style.display = produtosFiltrados.length === 0 ? "block" : "none";
+            if (containerVerMais) containerVerMais.style.display = produtosFiltrados.length > limiteAtual ? "block" : "none";
+        }
 
-            // Função central para renderizar a grelha
-            function atualizarGrelha() {
-                let produtosFiltrados = [];
-
-                // 1. Isolar os produtos que correspondem ao filtro e pesquisa
-                produtos.forEach(produto => {
-                    const tituloProduto = produto.querySelector(".card-title").innerText.toLowerCase();
-                    const categoriaProduto = produto.getAttribute("data-categoria");
-                    
-                    const correspondeBusca = tituloProduto.includes(termoBuscaAtual);
-                    const correspondeCategoria = (categoriaAtual === "todos" || categoriaAtual === categoriaProduto);
-
-                    if (correspondeBusca && correspondeCategoria) {
-                        produtosFiltrados.push(produto);
-                    } else {
-                        produto.style.display = "none";
-                    }
-                });
-
-                // 2. Aplicar o limite de visualização aos produtos filtrados
-                produtosFiltrados.forEach((produto, index) => {
-                    if (index < limiteAtual) {
-                        produto.style.display = "block";
-                    } else {
-                        produto.style.display = "none";
-                    }
-                });
-
-                // 3. Controlar a exibição das mensagens e botões
-                mensagemVazia.style.display = produtosFiltrados.length === 0 ? "block" : "none";
-                containerVerMais.style.display = produtosFiltrados.length > limiteAtual ? "block" : "none";
-            }
-
-            // Evento: Digitação na pesquisa
+        // Evento: Digitação na pesquisa
+        if (inputPesquisa) {
             inputPesquisa.addEventListener("input", function() {
                 termoBuscaAtual = this.value.toLowerCase();
                 categoriaAtual = "todos"; // Volta à aba "Todos os Produtos"
                 limiteAtual = CARDS_POR_PAGINA; // Reseta o limite visual
                 
                 botoesFiltro.forEach(b => b.classList.remove("active"));
-                document.getElementById("btn-filtro-todos").classList.add("active");
+                const btnTodos = document.getElementById("btn-filtro-todos");
+                if (btnTodos) btnTodos.classList.add("active");
                 
                 atualizarGrelha();
             });
+        }
 
-            // Evento: Clique nas abas de categoria
-            botoesFiltro.forEach(botao => {
-                botao.addEventListener("click", function() {
-                    categoriaAtual = this.getAttribute("data-categoria");
-                    termoBuscaAtual = ""; // Limpa a pesquisa
-                    inputPesquisa.value = ""; 
-                    limiteAtual = CARDS_POR_PAGINA; // Reseta o limite visual
+        // Evento: Clique nas abas de categoria
+        botoesFiltro.forEach(botao => {
+            botao.addEventListener("click", function() {
+                categoriaAtual = this.getAttribute("data-categoria");
+                termoBuscaAtual = ""; // Limpa a pesquisa
+                if (inputPesquisa) inputPesquisa.value = ""; 
+                limiteAtual = CARDS_POR_PAGINA; // Reseta o limite visual
 
-                    botoesFiltro.forEach(b => b.classList.remove("active"));
-                    this.classList.add("active");
+                botoesFiltro.forEach(b => b.classList.remove("active"));
+                this.classList.add("active");
 
-                    atualizarGrelha();
-                });
+                atualizarGrelha();
             });
+        });
 
-            // Evento: Clique no botão "Ver Mais"
+        // Evento: Clique no botão "Ver Mais"
+        if (btnVerMais) {
             btnVerMais.addEventListener("click", function() {
                 limiteAtual += CARDS_POR_PAGINA;
                 atualizarGrelha();
             });
+        }
 
-            // Renderiza a grelha inicial assim que a página carrega
-            atualizarGrelha();
-        });
-    </script>
+        // Renderiza a grelha inicial assim que a página carrega
+        atualizarGrelha();
+    });
+</script>
 {% endblock scripts %}  
