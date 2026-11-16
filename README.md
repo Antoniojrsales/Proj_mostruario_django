@@ -160,16 +160,15 @@ Com o projeto a correr localmente, pode aceder às seguintes rotas no seu navega
 ## 🌍 Projeto em Produção (Live Demo)
 
 A aplicação encontra-se atualmente em produção, hospedada no **Railway**, operando como uma vitrine digital real (ex: JR MOTOS). O ecossistema completo abrange tanto a experiência do cliente final como a gestão do lojista.
-
-*   **Página Inicial e Carrossel:** Interface limpa com banner da loja e secção interativa de destaques, otimizando a visibilidade de produtos em oferta.
-*   **Catálogo Dinâmico:** Listagem de produtos com barra de pesquisa e filtros rápidos em abas (Lançamentos, Mais Vendidos, Promoções).
+**Página Inicial e Carrossel:** Interface limpa com banner da loja e secção interativa de destaques, otimizando a visibilidade de produtos em oferta.
+**Catálogo Dinâmico:** Listagem de produtos com barra de pesquisa e filtros rápidos em abas (Lançamentos, Mais Vendidos, Promoções).
 <p align="center">
   <img width="1866" height="675" alt="home mostruario" src="https://github.com/user-attachments/assets/f20e36b5-954b-413f-ad06-b85babb959ae" />
   <img width="1877" height="595" alt="carrossel mostruario" src="https://github.com/user-attachments/assets/6e083191-07fa-4e2d-bc64-8d1eadb26f3f" />
   <img width="1891" height="932" alt="catalogo mostruario" src="https://github.com/user-attachments/assets/bda7af98-6235-4d90-88fa-37c213c55181" />
 </p>
-*   **Motor de Conversão (Carrinho):** Sistema de checkout em tempo real que calcula o total e redireciona o utilizador diretamente para fechar a compra via WhatsApp.
-*   **Gestão do Lojista:** Modal de acesso restrito (autenticação segura) para a administração do inventário de forma simples e direta.
+**Motor de Conversão (Carrinho):** Sistema de checkout em tempo real que calcula o total e redireciona o utilizador diretamente para fechar a compra via WhatsApp.
+**Gestão do Lojista:** Modal de acesso restrito (autenticação segura) para a administração do inventário de forma simples e direta.
 <p align="center">
   <img width="547" height="947" alt="fechar compras mostruario" src="https://github.com/user-attachments/assets/03ad465d-bf9a-4c2b-ae9f-f7309c9bb16b" />
   <img width="327" height="297" alt="area logista mostruario" src="https://github.com/user-attachments/assets/ae2c2f44-a1a6-4885-b3b9-8729384956d0" />
